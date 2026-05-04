@@ -1,3 +1,6 @@
+"use client";
+import Link from "next/link";
+
 const plans = [
   {
     tier: "Starter",
@@ -73,7 +76,7 @@ export function PricingSection() {
                 </li>
               ))}
             </ul>
-            <a href="#generate" style={{
+            <Link href="/generate" style={{
               display: "block", textAlign: "center",
               padding: ".75rem",
               border: plan.featured ? "none" : "1.5px solid var(--border)",
@@ -85,7 +88,7 @@ export function PricingSection() {
               transition: "all .2s",
             }}>
               {plan.cta}
-            </a>
+            </Link>
           </div>
         ))}
       </div>

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 export function Footer() {
   return (
@@ -41,14 +42,14 @@ export function Footer() {
               fontFamily: "DM Sans, sans-serif", outline: "none",
             }}
           />
-          <a href="#generate" style={{
+          <Link href="/generate" style={{
             background: "var(--accent)", color: "#fff",
             padding: ".75rem 1.5rem", borderRadius: "8px",
             fontSize: ".9rem", fontWeight: 800, textDecoration: "none",
             fontFamily: "Syne, sans-serif", whiteSpace: "nowrap",
           }}>
             Create free account →
-          </a>
+          </Link>
         </div>
       </section>
 

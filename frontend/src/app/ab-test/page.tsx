@@ -40,7 +40,7 @@ export default function AbTest() {
           <h3 style={{ fontSize: "1.2rem", fontWeight: 800, marginBottom: ".5rem" }}>Generate a hook test suite</h3>
           <p style={{ color: "var(--muted)", fontSize: ".9rem" }}>Requires an active product URL and a selected Avatar.</p>
         </div>
-        <a href="/#generate" style={{ background: "var(--text)", color: "var(--bg)", padding: ".75rem 1.5rem", borderRadius: "8px", fontWeight: 700, textDecoration: "none" }}>
+        <a href="/generate" style={{ background: "var(--text)", color: "var(--bg)", padding: ".75rem 1.5rem", borderRadius: "8px", fontWeight: 700, textDecoration: "none" }}>
           Go to Generator
         </a>
       </div>

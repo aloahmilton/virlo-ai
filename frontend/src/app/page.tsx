@@ -1,7 +1,6 @@
 import { Navbar } from "./components/Navbar";
 import { Hero } from "./components/Hero";
 import { PipelineVisual } from "./components/PipelineVisual";
-import { VideoGenerator } from "./components/VideoGenerator";
 import { FeaturesGrid } from "./components/FeaturesGrid";
 import { SocialProof } from "./components/SocialProof";
 import { PricingSection } from "./components/PricingSection";
@@ -18,13 +17,6 @@ export default function Home() {
       <Hero />
       <Divider />
       <PipelineVisual />
-      <Divider />
-      <section id="generate">
-        <div style={{ fontSize: "11px", fontFamily: "Syne, sans-serif", fontWeight: 700, letterSpacing: "2px", color: "var(--muted)", textTransform: "uppercase", marginBottom: ".5rem" }}>
-          Live demo
-        </div>
-        <VideoGenerator />
-      </section>
       <Divider />
       <FeaturesGrid />
       <Divider />

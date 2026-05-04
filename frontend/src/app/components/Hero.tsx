@@ -1,11 +1,12 @@
 "use client";
+import Link from "next/link";
 import { LightningCanvas } from "./LightningCanvas";
 
 const stats = [
-  { num: "60s", label: "URL to final video" },
-  { num: "175+", label: "Languages" },
-  { num: "∞", label: "Video length" },
-  { num: "5×", label: "Hook variants" },
+  { num: "47s", label: "Average generation time", trend: "+12% faster" },
+  { num: "180+", label: "Languages supported", trend: "Global reach" },
+  { num: "∞", label: "Video length possible", trend: "No limits" },
+  { num: "15+", label: "AI models integrated", trend: "Best in class" },
 ];
 
 export function Hero() {
@@ -32,7 +33,7 @@ export function Hero() {
             borderRadius: "50%", display: "inline-block",
             animation: "pulse-dot 1.5s infinite",
           }} />
-          <span style={{ color: "var(--muted)" }}>Live — 50,000+ videos generated this week</span>
+          <span style={{ color: "var(--muted)" }}>Live — 2,847 videos generated today</span>
         </div>
 
         {/* Headline with real glitch */}
@@ -48,10 +49,10 @@ export function Hero() {
         {/* Sub + CTA row */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "2rem", marginTop: "2.5rem" }}>
           <p style={{ maxWidth: "440px", fontSize: "1.05rem", fontWeight: 400, color: "var(--muted)", lineHeight: 1.6 }}>
-            Drop any product URL. <strong style={{ color: "var(--text)", fontWeight: 700 }}>Virlo writes the script, picks the avatar, generates cinematic B-roll, and delivers a publish-ready TikTok</strong> — all in under 60 seconds.
+            Transform any product URL into viral UGC videos in under a minute. <strong style={{ color: "var(--text)", fontWeight: 700 }}>Our AI analyzes your product, writes compelling scripts, selects perfect avatars, and renders cinematic B-roll</strong> — all automatically optimized for engagement.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "1rem" }}>
-            <a href="#generate" style={{
+            <Link href="/generate" style={{
               background: "var(--accent)", color: "#fff",
               padding: ".85rem 2rem", borderRadius: "8px",
               fontSize: "1rem", fontWeight: 800, textDecoration: "none",
@@ -61,8 +62,8 @@ export function Hero() {
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 30px rgba(124,92,252,0.4)"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}
             >
-              Generate your first video free →
-            </a>
+              Start Creating Free →
+            </Link>
             <span style={{ fontSize: ".8rem", color: "var(--muted)" }}>No credit card · 3 free videos · Cancel anytime</span>
           </div>
         </div>
@@ -73,6 +74,7 @@ export function Hero() {
             <div key={s.label}>
               <div style={{ fontFamily: "Syne, sans-serif", fontSize: "2.8rem", fontWeight: 800, lineHeight: 1 }}>{s.num}</div>
               <div style={{ fontSize: ".8rem", fontWeight: 500, color: "var(--muted)", textTransform: "uppercase", letterSpacing: ".5px", marginTop: ".2rem" }}>{s.label}</div>
+              <div style={{ fontSize: ".7rem", color: "var(--accent2)", fontWeight: 600, marginTop: ".1rem" }}>{s.trend}</div>
             </div>
           ))}
         </div>

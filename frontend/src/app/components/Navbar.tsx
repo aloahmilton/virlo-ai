@@ -2,15 +2,24 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, User, LogOut, Settings } from "lucide-react";
+import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleSignOut = async () => {
+    await signOut();
+    setShowUserMenu(false);
+  };
 
   return (
     <nav style={{
@@ -30,8 +39,8 @@ export function Navbar() {
       </a>
 
       <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-        {(["Pipeline", "API", "Long-form", "A/B Test", "Architecture"] as const).map((label, i) => {
-          const href = ["/", "/api-docs", "/long-form", "/ab-test", "/architecture"][i];
+        {(["Home", "API", "Pricing", "Long-form", "A/B Test", "Architecture"] as const).map((label, i) => {
+          const href = ["/", "/api-docs", "/#pricing", "/long-form", "/ab-test", "/architecture"][i];
           return (
             <a key={href} href={href}
               style={{ 
@@ -102,6 +111,159 @@ export function Navbar() {
             </div>
           </button>
         )}
+
+        {/* User Menu */}
+        <div style={{ position: "relative" }}>
+          <button
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "50%",
+              border: "1px solid rgba(255,255,255,0.2)",
+              background: user ? "var(--accent)" : "rgba(255,255,255,0.1)",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#fff",
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.borderColor = "var(--accent)";
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.borderColor = "rgba(255,255,255,0.2)";
+            }}
+          >
+            {user ? (
+              <User size={16} />
+            ) : (
+              <User size={16} />
+            )}
+          </button>
+
+          {showUserMenu && (
+            <div style={{
+              position: "absolute",
+              top: "100%",
+              right: 0,
+              marginTop: "0.5rem",
+              background: "var(--card)",
+              border: "1px solid var(--border)",
+              borderRadius: "12px",
+              padding: "0.5rem",
+              minWidth: "180px",
+              zIndex: 1000,
+              boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
+            }}>
+              {user ? (
+                <>
+                  <div style={{
+                    padding: "0.75rem",
+                    borderBottom: "1px solid var(--border)",
+                    fontSize: "0.9rem",
+                    color: "var(--text)",
+                    fontWeight: "600",
+                  }}>
+                    {user.email}
+                  </div>
+                  <Link
+                    href="/generate"
+                    style={{
+                      display: "block",
+                      padding: "0.75rem",
+                      color: "var(--text)",
+                      textDecoration: "none",
+                      fontSize: "0.9rem",
+                      borderRadius: "6px",
+                      transition: "background 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.target as HTMLElement).style.background = "var(--surface)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.target as HTMLElement).style.background = "transparent";
+                    }}
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <Settings size={14} style={{ marginRight: "0.5rem", display: "inline" }} />
+                    Generate Videos
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      background: "transparent",
+                      border: "none",
+                      color: "var(--text)",
+                      fontSize: "0.9rem",
+                      textAlign: "left",
+                      cursor: "pointer",
+                      borderRadius: "6px",
+                      transition: "background 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.target as HTMLElement).style.background = "var(--surface)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.target as HTMLElement).style.background = "transparent";
+                    }}
+                  >
+                    <LogOut size={14} style={{ marginRight: "0.5rem", display: "inline" }} />
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    style={{
+                      display: "block",
+                      padding: "0.75rem",
+                      color: "var(--text)",
+                      textDecoration: "none",
+                      fontSize: "0.9rem",
+                      borderRadius: "6px",
+                      transition: "background 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.target as HTMLElement).style.background = "var(--surface)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.target as HTMLElement).style.background = "transparent";
+                    }}
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    style={{
+                      display: "block",
+                      padding: "0.75rem",
+                      color: "var(--text)",
+                      textDecoration: "none",
+                      fontSize: "0.9rem",
+                      borderRadius: "6px",
+                      transition: "background 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.target as HTMLElement).style.background = "var(--surface)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.target as HTMLElement).style.background = "transparent";
+                    }}
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    Create Account
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         <span style={{
           background: theme === "dark" ? "rgba(0,229,192,0.1)" : "rgba(107,70,250,0.1)",

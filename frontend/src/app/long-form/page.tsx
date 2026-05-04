@@ -39,20 +39,88 @@ export default function LongForm() {
       {/* Generator UI */}
       <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "2rem" }}>
         <h2 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1.5rem" }}>Generate Storyboard</h2>
-        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-          <input 
-            type="text" 
-            placeholder="Topic: e.g. The history of mechanical keyboards..." 
-            style={{ flex: 2, minWidth: "250px", background: "var(--bg)", border: "1px solid var(--border)", borderRadius: "8px", padding: "1rem", color: "var(--text)", outline: "none" }}
-          />
-          <select style={{ flex: 1, minWidth: "120px", background: "var(--bg)", border: "1px solid var(--border)", borderRadius: "8px", padding: "1rem", color: "var(--text)", outline: "none" }}>
-            <option value="2">2 minutes</option>
-            <option value="5">5 minutes</option>
-            <option value="10">10 minutes</option>
-          </select>
-          <button style={{ background: "var(--accent)", color: "#fff", border: "none", borderRadius: "8px", padding: "0 2rem", fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
-            Generate
-          </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          {/* Prompt (Topic) - comes first */}
+          <div>
+            <label style={{ display: "block", fontSize: "0.9rem", fontWeight: "600", color: "var(--text)", marginBottom: "0.5rem" }}>
+              Topic/Prompt
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. The history of mechanical keyboards and their evolution..."
+              style={{
+                width: "100%",
+                background: "var(--bg)",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                padding: "1rem",
+                color: "var(--text)",
+                fontSize: "0.9rem",
+                outline: "none",
+                fontFamily: "DM Sans, sans-serif",
+              }}
+            />
+          </div>
+
+          {/* Description - comes second */}
+          <div>
+            <label style={{ display: "block", fontSize: "0.9rem", fontWeight: "600", color: "var(--text)", marginBottom: "0.5rem" }}>
+              Description (Optional)
+            </label>
+            <textarea
+              placeholder="Provide additional context, key points to cover, or specific requirements..."
+              rows={3}
+              style={{
+                width: "100%",
+                background: "var(--bg)",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                padding: "1rem",
+                color: "var(--text)",
+                fontSize: "0.9rem",
+                outline: "none",
+                fontFamily: "DM Sans, sans-serif",
+                resize: "vertical",
+              }}
+            />
+          </div>
+
+          {/* Duration and Generate button */}
+          <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: "block", fontSize: "0.9rem", fontWeight: "600", color: "var(--text)", marginBottom: "0.5rem" }}>
+                Duration
+              </label>
+              <select style={{
+                width: "100%",
+                background: "var(--bg)",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                padding: "1rem",
+                color: "var(--text)",
+                fontSize: "0.9rem",
+                outline: "none",
+                fontFamily: "DM Sans, sans-serif",
+              }}>
+                <option value="2">2 minutes</option>
+                <option value="5">5 minutes</option>
+                <option value="10">10 minutes</option>
+              </select>
+            </div>
+            <button style={{
+              background: "var(--accent)",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              padding: "1rem 2rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "Syne, sans-serif",
+              fontSize: "0.9rem",
+            }}>
+              Generate Storyboard
+            </button>
+          </div>
         </div>
       </div>
     </div>

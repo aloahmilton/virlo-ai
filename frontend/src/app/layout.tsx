@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { AuthProvider } from "@/lib/auth-context";
 
 export const metadata: Metadata = {
   title: "Virlo — URL to Viral UGC Video in 60 Seconds",
@@ -10,6 +11,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Virlo — URL to Viral Video in 60 Seconds",
     description: "AI-powered UGC video factory. Smart Scripts · Cinematic B-roll · Seamless Assembly.",
+    url: "https://virloai.vercel.app",
+    siteName: "Virlo",
     type: "website",
   },
   icons: {
@@ -26,7 +29,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
