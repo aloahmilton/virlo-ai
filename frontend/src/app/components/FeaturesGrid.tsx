@@ -50,7 +50,7 @@ export function FeaturesGrid() {
       <p style={{ color: "var(--muted)", fontSize: "1rem", maxWidth: "480px", marginBottom: "2.5rem", lineHeight: 1.6 }}>
         One unified platform. Our engine handles the scripting, the hyper-realistic avatars, the cinematic B-roll, and the final cut. You just post.
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1rem" }}>
+      <div className="mobile-grid-fix" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1rem" }}>
         {features.map((f, index) => {
           // Every 2nd card gets the spark effect, others get glitch
           const isSpark = index % 2 !== 0;

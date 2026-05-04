@@ -210,7 +210,7 @@ export function VideoGenerator() {
         {currentWizardStep === 1 && (
           <div style={{ animation: "fadeUp 0.3s ease" }}>
             {/* Input mode selector */}
-            <div style={{ display: "flex", gap: ".5rem", marginBottom: "1.5rem" }}>
+            <div className="input-mode-selector" style={{ display: "flex", gap: ".5rem", marginBottom: "1.5rem" }}>
               {[
                 { mode: 'url' as InputMode, label: 'Product URL', icon: '🔗', desc: 'Paste any product link' },
                 { mode: 'drag-drop' as InputMode, label: 'Drag & Drop', icon: '📎', desc: 'Drop URL or content' },
@@ -219,6 +219,7 @@ export function VideoGenerator() {
                 <button
                   key={mode}
                   onClick={() => setInputMode(mode)}
+                  className="input-mode-button"
                   style={{
                     flex: 1,
                     padding: "1rem",
@@ -231,6 +232,7 @@ export function VideoGenerator() {
                     cursor: "pointer",
                     transition: "all 0.2s ease",
                     textAlign: "center",
+                    minHeight: "100px",
                   }}
                 >
                   <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>{icon}</div>

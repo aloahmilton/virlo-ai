@@ -41,7 +41,7 @@ export function PricingSection() {
       <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-1px", textAlign: "center", marginBottom: "2.5rem" }}>
         Straightforward.<br />No surprises.
       </h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.25rem", maxWidth: "900px", margin: "0 auto" }}>
+      <div className="mobile-grid-fix" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.25rem", maxWidth: "900px", margin: "0 auto" }}>
         {plans.map((plan) => (
           <div key={plan.tier} style={{
             border: `1px solid ${plan.featured ? "var(--accent)" : "var(--border)"}`,

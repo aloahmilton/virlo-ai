@@ -47,7 +47,7 @@ export function Hero() {
         </h1>
 
         {/* Sub + CTA row */}
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "2rem", marginTop: "2.5rem" }}>
+        <div className="hero-content" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "2rem", marginTop: "2.5rem" }}>
           <p style={{ maxWidth: "440px", fontSize: "1.05rem", fontWeight: 400, color: "var(--muted)", lineHeight: 1.6 }}>
             Transform any product URL into viral UGC videos in under a minute. <strong style={{ color: "var(--text)", fontWeight: 700 }}>Our AI analyzes your product, writes compelling scripts, selects perfect avatars, and renders cinematic B-roll</strong> — all automatically optimized for engagement.
           </p>
@@ -69,7 +69,7 @@ export function Hero() {
         </div>
 
         {/* Stats */}
-        <div style={{ display: "flex", gap: "3rem", marginTop: "4rem", paddingTop: "2.5rem", borderTop: "1px solid var(--border)", flexWrap: "wrap" }}>
+        <div className="hero-stats" style={{ display: "flex", gap: "3rem", marginTop: "4rem", paddingTop: "2.5rem", borderTop: "1px solid var(--border)", flexWrap: "wrap" }}>
           {stats.map((s) => (
             <div key={s.label}>
               <div style={{ fontFamily: "Syne, sans-serif", fontSize: "2.8rem", fontWeight: 800, lineHeight: 1 }}>{s.num}</div>

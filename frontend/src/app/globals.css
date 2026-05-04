@@ -48,6 +48,225 @@ body {
   font-family: 'DM Sans', sans-serif;
   font-size: 15px;
   line-height: 1.6;
+}
+
+/* ─── MOBILE RESPONSIVE FIXES ─────────────────── */
+
+/* Container max-widths for better mobile experience */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  /* Fix padding for mobile */
+  .container, section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Stack flex items vertically on mobile */
+  .mobile-stack {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Make buttons full width on mobile */
+  .mobile-full-width {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* Adjust grid layouts for mobile */
+  .mobile-grid-fix {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* Fix input mode selector in VideoGenerator */
+  .input-mode-selector {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  .input-mode-button {
+    min-height: 80px !important;
+  }
+
+  /* Fix hero section layout */
+  .hero-content {
+    text-align: center !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+  }
+
+  .hero-stats {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* Fix navbar padding on mobile */
+  .navbar-mobile {
+    padding: 1rem !important;
+  }
+
+  /* Hide certain elements on very small screens */
+  .mobile-hidden {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+
+  /* Even more compact spacing on very small screens */
+  .container, section {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Smaller headings on mobile */
+  h1 {
+    font-size: clamp(1.8rem, 8vw, 3rem) !important;
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 6vw, 2.2rem) !important;
+  }
+}
+
+/* ─── ANIMATIONS ─────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ─── GLITCH EFFECTS ─────────────────── */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  animation: glitch-1 0.5s infinite;
+  color: var(--accent);
+  z-index: -1;
+}
+
+.glitch::after {
+  animation: glitch-2 0.5s infinite;
+  color: var(--accent2);
+  z-index: -2;
+}
+
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(2px, -2px); }
+  40% { transform: translate(2px, 2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(-2px, 2px); }
+}
+
+/* ─── SPARK EFFECTS ─────────────────── */
+.spark-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--card) 0%, rgba(124,92,252,0.05) 100%);
+  border: 1px solid var(--border);
+}
+
+.spark-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(124,92,252,0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.spark-card:hover::before {
+  opacity: 1;
+}
+
+.spark-card.active-spark::before {
+  opacity: 1;
+  animation: spark-pulse 1.5s ease-out;
+}
+
+@keyframes spark-pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* ─── GLITCH ACTIVE CLASS ─────────────────── */
+.glitch-active {
+  position: relative;
+}
+
+.glitch-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: glitch-scan 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes glitch-scan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   transition: background 0.3s ease, color 0.3s ease;
