@@ -1,0 +1,41 @@
+VIRLO PROPRIETARY SOFTWARE LICENSE
+
+Copyright (c) 2025 Virlo. All Rights Reserved.
+
+NOTICE: This software and all associated source code, documentation, assets,
+and intellectual property ("Software") are the exclusive property of Virlo
+and its founders.
+
+1. RESTRICTIONS
+   You may NOT, without prior written permission from Virlo:
+   - Copy, reproduce, distribute, or publish this Software
+   - Modify, adapt, translate, or create derivative works
+   - Reverse engineer, decompile, or disassemble any component
+   - Use this Software or any portion of it to build a competing product
+   - Sublicense, sell, rent, lease, or transfer rights to this Software
+   - Deploy this Software to any public or commercial environment outside
+     of authorized Virlo infrastructure
+
+2. AUTHORIZED USE
+   Access to this repository is granted strictly to authorized contributors,
+   employees, and contractors of Virlo under a separate confidentiality
+   agreement. Such parties may view and contribute to the codebase solely
+   for the benefit of Virlo, subject to the terms of their agreement.
+
+3. CONFIDENTIALITY
+   This Software contains trade secrets and proprietary information belonging
+   to Virlo, including but not limited to pipeline architecture, AI
+   orchestration logic, and rendering workflows. All authorized parties must
+   treat this information as strictly confidential.
+
+4. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED. VIRLO SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING FROM THE
+   USE OF THIS SOFTWARE.
+
+5. TERMINATION
+   Any breach of these terms immediately terminates your authorization to
+   access or use this Software. Virlo reserves the right to pursue all
+   available legal remedies.
+
+For licensing inquiries: legal@virlo.ai
