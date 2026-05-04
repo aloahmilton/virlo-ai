@@ -37,12 +37,38 @@ app.use("/api/avatar", avatarRouter);
 
 // Health check
 app.get("/health", (req, res) => {
+  const services = {
+    supabase: !!(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
+    grok: !!process.env.GROK_API_KEY,
+    heygen: !!process.env.HEYGEN_API_KEY,
+    fal: !!process.env.FAL_API_KEY,
+    redis: !!(process.env.REDIS_HOST && process.env.REDIS_PORT)
+  };
+
+  const allServicesConfigured = Object.values(services).every(Boolean);
+
   res.json({
-    status: "ok",
+    status: allServicesConfigured ? "healthy" : "degraded",
     version: "1.0.0",
-    name: "Virlo",
+    name: "Virlo AI Backend",
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || "development"
+    environment: process.env.NODE_ENV || "development",
+    uptime: process.uptime(),
+    services: {
+      supabase: services.supabase ? "configured" : "missing_config",
+      grok: services.grok ? "configured" : "missing_config",
+      heygen: services.heygen ? "configured" : "missing_config",
+      fal: services.fal ? "configured" : "missing_config",
+      redis: services.redis ? "configured" : "missing_config"
+    },
+    endpoints: {
+      health: "/health",
+      video: "/api/video",
+      script: "/api/script",
+      avatar: "/api/avatar",
+      webhooks: "/api/webhooks/virlo"
+    },
+    frontend_url: process.env.FRONTEND_URL || "not_configured"
   });
 });
 
