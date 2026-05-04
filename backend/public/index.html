@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 2rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -28,11 +28,27 @@
         .status {
             display: inline-block;
             padding: 0.5rem 1rem;
-            background: #4CAF50;
-            color: white;
             border-radius: 20px;
             font-weight: bold;
+            margin: 0.5rem;
         }
+        .status.healthy { background: #4CAF50; }
+        .status.degraded { background: #FF9800; }
+        .status.error { background: #F44336; }
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .service {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .service.configured { border-left: 4px solid #4CAF50; }
+        .service.missing { border-left: 4px solid #F44336; }
         .endpoint {
             background: rgba(255, 255, 255, 0.1);
             padding: 1rem;
@@ -48,51 +64,135 @@
             color: #81C784;
             text-decoration: none;
         }
-        a:hover {
-            text-decoration: underline;
+        a:hover { text-decoration: underline; }
+        .loading { color: #ccc; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
         }
+        .stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .refresh-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 1rem 0;
+        }
+        .refresh-btn:hover { background: #45a049; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎬 Virlo AI Backend API</h1>
-        <p><span class="status">● Online</span></p>
-        <p>Welcome to the Virlo AI video generation backend API. This service powers automated UGC video creation using AI.</p>
+        <div id="status-container">
+            <p><span class="status loading">Loading status...</span></p>
+        </div>
+
+        <button class="refresh-btn" onclick="loadHealth()">🔄 Refresh Status</button>
+
+        <div class="stats" id="stats-container">
+            <div class="stat">
+                <strong>Version</strong><br>
+                <span id="version">Loading...</span>
+            </div>
+            <div class="stat">
+                <strong>Environment</strong><br>
+                <span id="environment">Loading...</span>
+            </div>
+            <div class="stat">
+                <strong>Uptime</strong><br>
+                <span id="uptime">Loading...</span>
+            </div>
+        </div>
+
+        <h2>🔧 Service Status</h2>
+        <div class="service-grid" id="services-container">
+            <div class="service loading">Loading services...</div>
+        </div>
 
         <h2>🚀 API Endpoints</h2>
-
-        <div class="endpoint">
-            <span class="method">GET</span> <a href="/health">/health</a><br>
-            Health check endpoint - returns API status and version information
+        <div id="endpoints-container">
+            <div class="endpoint">
+                <span class="method">GET</span> <a href="/health" target="_blank">/health</a><br>
+                Health check endpoint - returns API status and version information
+            </div>
+            <div class="endpoint">
+                <span class="method">POST</span> /api/video<br>
+                Generate video content using AI pipeline
+            </div>
+            <div class="endpoint">
+                <span class="method">POST</span> /api/script<br>
+                Generate video scripts from product URLs
+            </div>
+            <div class="endpoint">
+                <span class="method">POST</span> /api/avatar<br>
+                Create AI avatars for video content
+            </div>
+            <div class="endpoint">
+                <span class="method">POST</span> /api/webhooks/virlo<br>
+                Webhook endpoint for external service callbacks
+            </div>
         </div>
 
-        <div class="endpoint">
-            <span class="method">POST</span> /api/video<br>
-            Generate video content using AI pipeline
-        </div>
-
-        <div class="endpoint">
-            <span class="method">POST</span> /api/script<br>
-            Generate video scripts from product URLs
-        </div>
-
-        <div class="endpoint">
-            <span class="method">POST</span> /api/avatar<br>
-            Create AI avatars for video content
-        </div>
-
-        <div class="endpoint">
-            <span class="method">POST</span> /api/webhooks/virlo<br>
-            Webhook endpoint for external service callbacks
-        </div>
-
-        <h2>🔗 Frontend</h2>
+        <h2>🔗 Frontend Application</h2>
         <p>Access the full Virlo AI application at: <a href="https://virloai.vercel.app" target="_blank">https://virloai.vercel.app</a></p>
 
-        <h2>📊 Status</h2>
-        <p>Environment: Production<br>
-        Version: 1.0.0<br>
-        Last Updated: May 4, 2026</p>
+        <h2>📚 Documentation</h2>
+        <p>Complete API documentation: <a href="https://github.com/aloahmilton/virlo-ai/blob/main/API_REFERENCE.md" target="_blank">API Reference</a></p>
     </div>
+
+    <script>
+        async function loadHealth() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+
+                // Update status
+                const statusEl = document.querySelector('.status');
+                statusEl.className = 'status ' + data.status;
+                statusEl.textContent = '● ' + data.status.charAt(0).toUpperCase() + data.status.slice(1);
+
+                // Update stats
+                document.getElementById('version').textContent = data.version;
+                document.getElementById('environment').textContent = data.environment;
+                document.getElementById('uptime').textContent = Math.round(data.uptime) + 's';
+
+                // Update services
+                const servicesContainer = document.getElementById('services-container');
+                servicesContainer.innerHTML = '';
+
+                Object.entries(data.services).forEach(([service, status]) => {
+                    const serviceEl = document.createElement('div');
+                    serviceEl.className = 'service ' + (status === 'configured' ? 'configured' : 'missing');
+                    serviceEl.innerHTML = `
+                        <strong>${service.charAt(0).toUpperCase() + service.slice(1)}</strong><br>
+                        <small>${status === 'configured' ? '✅ Configured' : '❌ Missing'}</small>
+                    `;
+                    servicesContainer.appendChild(serviceEl);
+                });
+
+            } catch (error) {
+                console.error('Failed to load health data:', error);
+                const statusEl = document.querySelector('.status');
+                statusEl.className = 'status error';
+                statusEl.textContent = '● Error loading status';
+            }
+        }
+
+        // Load health data on page load
+        loadHealth();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadHealth, 30000);
+    </script>
 </body>
 </html>
