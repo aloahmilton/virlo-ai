@@ -5,10 +5,7 @@
  * we store the job in Redis and let the client poll /api/video/status/:jobId
  */
 
-import redis from "../services/redisClient.js";
-import { randomUUID } from "crypto";
-
-const JOB_TTL = 60 * 60 * 2; // 2 hours
+import jobQueue from "../services/jobQueue.js";
 
 export const JobStatus = {
   PENDING: "pending",
@@ -19,34 +16,17 @@ export const JobStatus = {
 
 /** Create a new job and return its ID */
 export async function createJob(type, payload) {
-  const jobId = randomUUID();
-  const job = {
-    jobId,
-    type,
-    status: JobStatus.PENDING,
-    payload,
-    result: null,
-    error: null,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  };
-  await redis.set(`job:${jobId}`, JSON.stringify(job), "EX", JOB_TTL);
-  return jobId;
+  return await jobQueue.createJob(type, payload);
 }
 
 /** Get a job by ID */
 export async function getJob(jobId) {
-  const raw = await redis.get(`job:${jobId}`);
-  return raw ? JSON.parse(raw) : null;
+  return await jobQueue.getJob(jobId);
 }
 
 /** Update job status + optional result/error */
 export async function updateJob(jobId, updates) {
-  const job = await getJob(jobId);
-  if (!job) return null;
-  const updated = { ...job, ...updates, updatedAt: Date.now() };
-  await redis.set(`job:${jobId}`, JSON.stringify(updated), "EX", JOB_TTL);
-  return updated;
+  return await jobQueue.updateJob(jobId, updates);
 }
 
 /** Cache a value with TTL (for avatar/voice lists) */

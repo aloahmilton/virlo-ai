@@ -129,6 +129,10 @@ REDIS_PASSWORD=your-password-here
 PORT=3000
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3001
+
+# Webhooks (Optional: API Callbacks)
+WEBHOOK_URL=https://your-app.com/api/webhooks/virlo
+WEBHOOK_SECRET=your-webhook-secret-here
 ```
 
 ### Frontend (.env.local)
@@ -140,6 +144,47 @@ NEXT_PUBLIC_ENABLE_LONG_FORM=true
 NEXT_PUBLIC_ENABLE_AB_TESTING=true
 NEXT_PUBLIC_ENABLE_LOCALIZATION=true
 ```
+
+---
+
+## 🪝 Webhook Integration
+
+Virlo supports webhook callbacks for real-time job status updates. Configure webhooks to receive notifications when videos complete or fail.
+
+### Webhook Setup
+
+1. **Set webhook URL** in your `.env`:
+   ```bash
+   WEBHOOK_URL=https://your-app.com/api/webhooks/virlo
+   WEBHOOK_SECRET=your-webhook-secret-here
+   ```
+
+2. **Handle webhook events** in your application:
+   ```javascript
+   // POST /api/webhooks/virlo
+   {
+     "event": "video.completed",
+     "jobId": "job_1234567890_abc123",
+     "timestamp": "2024-01-15T10:30:00.000Z",
+     "data": {
+       "videoId": "heygen_video_123",
+       "scriptData": {...},
+       "status": "completed"
+     }
+   }
+   ```
+
+### Webhook Events
+
+- `video.completed` — Video generation finished successfully
+- `video.failed` — Video generation failed with error details
+- `job.progress` — Progress updates during generation (25%, 50%, 75%, 90%)
+
+### Security
+
+- Include `x-webhook-secret` header for authentication
+- Verify the secret matches your `WEBHOOK_SECRET`
+- Webhooks are sent via HTTP POST with JSON payload
 
 ---
 

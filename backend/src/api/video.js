@@ -65,13 +65,24 @@ videoRouter.post("/long-form", async (req, res) => {
     const { topic, durationMins = 2, ...options } = req.body;
     if (!topic) return res.status(400).json({ error: "topic is required" });
 
-    const pipeline = getPipeline();
-    const result = await pipeline.topicToLongFormVideo(topic, durationMins, {
-      ...options,
-      onProgress: (p) => console.log(`[LongForm] ${p.step}/${p.total}: ${p.message}`),
-    });
+    // Create a Redis job and return immediately
+    const jobId = await createJob("video_long_form", { topic, durationMins, ...options });
+    res.json({ success: true, jobId, status: "pending", message: "Job queued. Poll /api/video/job/:jobId for updates." });
 
-    res.json({ success: true, data: result });
+    // Run the pipeline in the background (non-blocking)
+    const pipeline = getPipeline();
+    updateJob(jobId, { status: JobStatus.PROCESSING });
+
+    pipeline.topicToLongFormVideo(topic, durationMins, {
+      ...options,
+      onProgress: (p) => {
+        console.log(`[Job ${jobId}] ${p.step}/${p.total}: ${p.message}`);
+        updateJob(jobId, { status: JobStatus.PROCESSING, progress: p });
+      },
+    })
+      .then((result) => updateJob(jobId, { status: JobStatus.COMPLETED, result }))
+      .catch((err) => updateJob(jobId, { status: JobStatus.FAILED, error: err.message }));
+
   } catch (err) {
     console.error("[/long-form]", err);
     res.status(500).json({ error: err.message });
@@ -100,10 +111,30 @@ videoRouter.get("/status/:videoId", async (req, res) => {
 videoRouter.post("/ab-test", async (req, res) => {
   try {
     const { productUrl, avatarId, voiceId, ...options } = req.body;
+    if (!productUrl || !avatarId || !voiceId) {
+      return res.status(400).json({ error: "productUrl, avatarId, and voiceId are required" });
+    }
+
+    // Create a Redis job and return immediately
+    const jobId = await createJob("video_ab_test", { productUrl, avatarId, voiceId, ...options });
+    res.json({ success: true, jobId, status: "pending", message: "Job queued. Poll /api/video/job/:jobId for updates." });
+
+    // Run the pipeline in the background (non-blocking)
     const pipeline = getPipeline();
-    const result = await pipeline.generateABTestBatch(productUrl, avatarId, voiceId, options);
-    res.json({ success: true, data: result });
+    updateJob(jobId, { status: JobStatus.PROCESSING });
+
+    pipeline.generateABTestBatch(productUrl, avatarId, voiceId, {
+      ...options,
+      onProgress: (p) => {
+        console.log(`[Job ${jobId}] ${p.step}/${p.total}: ${p.message}`);
+        updateJob(jobId, { status: JobStatus.PROCESSING, progress: p });
+      },
+    })
+      .then((result) => updateJob(jobId, { status: JobStatus.COMPLETED, result }))
+      .catch((err) => updateJob(jobId, { status: JobStatus.FAILED, error: err.message }));
+
   } catch (err) {
+    console.error("[/ab-test]", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -115,10 +146,24 @@ videoRouter.post("/ab-test", async (req, res) => {
 videoRouter.post("/localize", async (req, res) => {
   try {
     const { videoId, script, languages } = req.body;
+    if (!videoId || !script) {
+      return res.status(400).json({ error: "videoId and script are required" });
+    }
+
+    // Create a Redis job and return immediately
+    const jobId = await createJob("video_localize", { videoId, script, languages });
+    res.json({ success: true, jobId, status: "pending", message: "Job queued. Poll /api/video/job/:jobId for updates." });
+
+    // Run the pipeline in the background (non-blocking)
     const pipeline = getPipeline();
-    const results = await pipeline.generateLocalizationBatch(videoId, script, languages);
-    res.json({ success: true, data: results });
+    updateJob(jobId, { status: JobStatus.PROCESSING });
+
+    pipeline.generateLocalizationBatch(videoId, script, languages)
+      .then((result) => updateJob(jobId, { status: JobStatus.COMPLETED, result }))
+      .catch((err) => updateJob(jobId, { status: JobStatus.FAILED, error: err.message }));
+
   } catch (err) {
+    console.error("[/localize]", err);
     res.status(500).json({ error: err.message });
   }
 });

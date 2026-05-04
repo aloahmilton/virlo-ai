@@ -37,13 +37,48 @@ app.use("/api/avatar", avatarRouter);
 
 // Health check
 app.get("/health", (req, res) => {
-  res.json({ 
-    status: "ok", 
-    version: "1.0.0", 
+  res.json({
+    status: "ok",
+    version: "1.0.0",
     name: "Virlo",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || "development"
   });
+});
+
+// Webhook endpoint for external callbacks
+app.post("/api/webhooks/virlo", async (req, res) => {
+  try {
+    const { event, jobId, data } = req.body;
+    const webhookSecret = req.headers['x-webhook-secret'];
+
+    // Verify webhook secret if configured
+    if (process.env.WEBHOOK_SECRET && webhookSecret !== process.env.WEBHOOK_SECRET) {
+      return res.status(401).json({ error: "Invalid webhook secret" });
+    }
+
+    console.log(`📡 Webhook received: ${event} for job ${jobId}`);
+
+    // Handle different webhook events
+    switch (event) {
+      case "video.completed":
+        console.log(`✅ Video completed: ${jobId}`, data);
+        break;
+      case "video.failed":
+        console.log(`❌ Video failed: ${jobId}`, data);
+        break;
+      case "job.progress":
+        console.log(`📊 Job progress: ${jobId}`, data);
+        break;
+      default:
+        console.log(`ℹ️ Unknown webhook event: ${event}`);
+    }
+
+    res.json({ success: true, received: true });
+  } catch (err) {
+    console.error("Webhook error:", err);
+    res.status(500).json({ error: "Webhook processing failed" });
+  }
 });
 
 // Welcome message
@@ -59,8 +94,13 @@ app.get("/", (req, res) => {
       avatars: "GET /api/avatar/list",
       status: "GET /api/video/status/:videoId",
       job: "GET /api/video/job/:jobId",
+      webhooks: "POST /api/webhooks/virlo",
     },
-    docs: "https://github.com/virlo-ai/virlo/blob/main/BACKEND_IMPLEMENTATION.md"
+    docs: "https://github.com/virlo-ai/virlo/blob/main/API_REFERENCE.md",
+    webhooks: {
+      setup: "Configure WEBHOOK_URL and WEBHOOK_SECRET in .env",
+      events: ["video.completed", "video.failed", "job.progress"]
+    }
   });
 });
 
