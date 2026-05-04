@@ -136,6 +136,87 @@ Return JSON:
     return JSON.parse(raw.replace(/```json|```/g, "").trim());
   }
 
+  /** Storyboard for long-form videos (topic → 30s scenes) */
+  async generateStoryboard(topic, durationMins, options = {}) {
+    const {
+      platform = "youtube",
+      style = "cinematic",
+      tone = "engaging",
+      brandVoice = "",
+      hasUserImages = false,
+      imageUrls = [],
+    } = options;
+
+    const scenesPerMinute = 2.5; // Each 30s scene
+    const totalScenes = Math.ceil(durationMins * scenesPerMinute);
+
+    const systemPrompt = `You are a documentary filmmaker and video editor. 
+Create detailed scene breakdowns for B-roll generation.
+${brandVoice ? `Brand voice: ${brandVoice}` : ""}
+Return valid JSON only. No markdown.`;
+
+    const userPrompt = `Create a ${durationMins}-minute video storyboard (${totalScenes} scenes, 30s each).
+Topic: ${topic}
+Platform: ${platform}
+Style: ${style}
+Tone: ${tone}
+
+Return JSON:
+{
+  "title": "Video title",
+  "totalScenes": ${totalScenes},
+  "totalDurationMins": ${durationMins},
+  "totalDurationSecs": ${durationMins * 60},
+  "aspectRatio": "16:9",
+  "captionStyle": "on-screen-text",
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "durationSecs": 30,
+      "voiceoverScript": "The narrative for this scene",
+      "motionPrompt": "Detailed Kling V3 prompt for the cinematic B-roll",
+      "musicMood": "energetic|calm|dramatic",
+      "onscreenText": "Optional text overlay",
+      "cameraAngle": "wide shot|close-up|pan",
+      "useUserImage": false,
+      "transitionType": "cut|fade|zoom"
+    }
+  ],
+  "voiceoverNarrationFull": "Full continuous narration across all scenes",
+  "musicGenre": "genre suggestion"
+}`;
+
+    const raw = await this.complete(systemPrompt, userPrompt, { 
+      maxTokens: 4000,
+      temperature: 0.7 
+    });
+    return JSON.parse(raw.replace(/```json|```/g, "").trim());
+  }
+
+  /** Generate a Kling V3 optimized motion prompt from scene description */
+  async generateMotionPrompt(description, style = "cinematic") {
+    const systemPrompt = `You are a Kling V3 expert. Create detailed, specific motion prompts that
+maximize video quality and realism. Return valid JSON only.`;
+
+    const userPrompt = `Generate a Kling V3 motion prompt for:
+Description: ${description}
+Style: ${style}
+
+Return JSON:
+{
+  "motionPrompt": "Detailed 2-3 sentence prompt optimized for Kling V3",
+  "cameraKeywords": ["keyword1", "keyword2"],
+  "qualitySettings": {
+    "cinematography": "principle used",
+    "lighting": "lighting approach",
+    "colorGrade": "color palette"
+  }
+}`;
+
+    const raw = await this.complete(systemPrompt, userPrompt, { temperature: 0.6 });
+    return JSON.parse(raw.replace(/```json|```/g, "").trim());
+  }
+
   /** Learn brand voice from past scripts */
   async analyzeBrandVoice(pastScripts) {
     const systemPrompt = `You are a brand strategist. Return valid JSON only.`;
@@ -148,17 +229,39 @@ Return JSON:
   "toneWords": ["word1", "word2"],
   "avoidWords": ["word1", "word2"],
   "sentenceLength": "short|medium|long",
-  "personality": "description",
-  "audienceAge": "18-24|25-34|35-44",
-  "voiceGuidelines": "2-3 sentence summary"
+  "commonPhrases": ["phrase1", "phrase2"],
+  "uniqueVoiceProfile": "Description of what makes this brand voice unique"
 }`;
 
-    const raw = await this.complete(systemPrompt, userPrompt, { temperature: 0.3 });
+    const raw = await this.complete(systemPrompt, userPrompt, { temperature: 0.5 });
+    return JSON.parse(raw.replace(/```json|```/g, "").trim());
+  }
+
+  /** Localize a script for a specific market */
+  async localizeScript(script, targetLanguage, targetMarket, brandVoice = "") {
+    const systemPrompt = `You are a cultural localization expert, not just a translator.
+Rewrite scripts to resonate with specific cultural contexts.
+${brandVoice ? `Brand voice: ${brandVoice}` : ""}
+Return valid JSON only.`;
+
+    const userPrompt = `Localize this script for ${targetMarket} (language: ${targetLanguage}):
+Original Script: ${script}
+
+Return JSON:
+{
+  "localizedScript": "Full culturally adapted script",
+  "translatedHook": "Hook optimized for local tastes",
+  "culturalInsights": ["insight1", "insight2"],
+  "localTrends": "Current trends this script leverages",
+  "languageCode": "${targetLanguage}"
+}`;
+
+    const raw = await this.complete(systemPrompt, userPrompt, { temperature: 0.75 });
     return JSON.parse(raw.replace(/```json|```/g, "").trim());
   }
 
   /** Cultural localization — not just translation */
-  async localizeScript(script, targetLanguage, targetMarket) {
+  async localizeScript(script, targetLanguage, targetMarket, brandVoice = "") {
     const systemPrompt = `You are a cultural localization expert. Adapt, don't just translate. Return valid JSON only.`;
 
     const userPrompt = `Localize this UGC script:

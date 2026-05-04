@@ -151,19 +151,51 @@ export class VideoPipeline {
   }
 
   /**
-   * LOCALIZE: Existing video → 20 culturally adapted language versions
+   * LOCALIZATION: Video → 20 language versions with cultural adaptation
    */
-  async localizeToLanguages(videoId, script, languages) {
-    const jobs = languages.map(async ({ code, market }) => {
-      const localized = await this.grok.localizeScript(script, code, market);
-      const result = await this.heygen.translateVideo(videoId, code, localized.localizedScript);
+  async generateLocalizationBatch(videoId, scriptContent, targetLanguages = []) {
+    const languages = targetLanguages.length > 0
+      ? targetLanguages
+      : [
+        { code: "es", market: "Mexico" },
+        { code: "pt", market: "Brazil" },
+        { code: "fr", market: "France" },
+        { code: "de", market: "Germany" },
+        { code: "it", market: "Italy" },
+        { code: "ja", market: "Japan" },
+        { code: "zh", market: "China" },
+        { code: "ko", market: "South Korea" },
+        { code: "in", market: "India" },
+        { code: "ru", market: "Russia" },
+        { code: "ar", market: "Middle East" },
+        { code: "th", market: "Thailand" },
+        { code: "vi", market: "Vietnam" },
+        { code: "pl", market: "Poland" },
+        { code: "tr", market: "Turkey" },
+      ];
+
+    const localizePromises = languages.map(async (lang) => {
+      const localizedScript = await this.grok.localizeScript(
+        scriptContent,
+        lang.code,
+        lang.market
+      );
+
+      const { videoId: newVideoId } = await this.heygen.translateVideo(
+        videoId,
+        lang.code,
+        localizedScript.localizedScript
+      );
+
       return {
-        language: code,
-        market,
-        videoId: result.video_id,
-        culturalChanges: localized.culturalChanges,
+        languageCode: lang.code,
+        market: lang.market,
+        videoId: newVideoId,
+        localizedScript: localizedScript.localizedScript,
       };
     });
-    return Promise.all(jobs);
+
+    const localizedVideos = await Promise.all(localizePromises);
+    return { originalVideoId: videoId, localizedVersions: localizedVideos };
   }
 }

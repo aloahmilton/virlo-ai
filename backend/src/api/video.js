@@ -116,7 +116,7 @@ videoRouter.post("/localize", async (req, res) => {
   try {
     const { videoId, script, languages } = req.body;
     const pipeline = getPipeline();
-    const results = await pipeline.localizeToLanguages(videoId, script, languages);
+    const results = await pipeline.generateLocalizationBatch(videoId, script, languages);
     res.json({ success: true, data: results });
   } catch (err) {
     res.status(500).json({ error: err.message });
